@@ -1,0 +1,631 @@
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-2001] Électricité\\ TP \no 1 : Circuits résistifs avec sources de tension continue\ifthenelse{\boolean{corrige}}{~-- corrigé}{}}
+\rhead{v1.0.1\\ page \thepage}
+\cfoot{}
+%%
+
+\pdfinfo{
+/Author (Raoul Sommeillier, ULB -- BEAMS)
+/Title (TP 1 ELEC-H-2001, Circuits résistifs avec sources de tension continue)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={TP 1 [ELEC-H-2001] Électricité : Circuits résistifs avec sources de tension continue},
+pdfauthor={Raoul Sommeillier, ©2018 ULB - BEAMS  },
+%pdfsubject={filtrage et analyse fréquentielle}
+}
+
+%\date{\vspace{-1cm}\mydate\today}
+%\title{\vspace{-2cm} Labo \no 6\\ Électronique appliquée [ELEC-H-301]\\Réalisation d'un ampli à transistor\ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+%\author{\vspace{-1cm}}%\textsc{Yannick Allard}}
+
+\setlength{\parskip}{0.5cm plus4mm minus3mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+
+\begin{document}
+
+\tptitle{}{Séance 1~: Circuits résistifs avec sources de tension continue}
+
+\section{Pré-requis}
+Avant la séance, vous aurez lu attentivement l'énoncé de la manipulation. Vous aurez par ailleurs relu les chapitres et sections suivants:
+\begin{itemize}
+	\item Chapitre 1 - Circuits à éléments concentrés
+	\begin{itemize}
+		\item Section 1.6 - Puissance instantanée, conventions et passivité
+	\end{itemize}
+	\item Chapitre 5 - Résoudre un circuit : procédure de base et accélérateur
+	\begin{itemize}
+		\item Section 5.1 -  Vocabulaire lié aux circuits
+		\begin{itemize}
+			\item 5.1.1 Rappels 
+			\item 5.1.2 Connexions série et parallèle
+			\item 5.1.3 Branche
+			\item 5.1.4 Maille 
+		\end{itemize}
+		\item Section 5.2 - Lois de Kirchhoff
+	\end{itemize}
+\end{itemize}
+
+\vspace{5pt}
+
+\newpage
+
+\section{Exercices}
+\subsection{Predict-Observe-Explain}
+%\ifthenelse{\boolean{assistant}}
+%{\color{blue} Exercice prioritaire \\ Timing: 15min \\
+%Cet exercice utilise la méthode prédiction-calculs-interprétations des résultats et comparaison des résultats obtenus avec les prédictions.\\ \color{black}}{}
+Soit le circuit ci-dessous:
+\begin{center}
+\begin{circuitikz} \draw
+(0,4)   to[battery1, l=$E$, i<=$i$] 	(0,0)
+(0,4)--(2,4)--(2,6)
+(2,4)   to[R, l=$R_4$, i=$i_2$, v<=$V_2$](7,4)--(8,4)
+(2,6)   to[R, l=$R_3$, i=$i_1$]			(7,6)--(7,4)
+(8,4)   to[R, l_=$R_1$]					(8,2)
+		to[R, l_=$R_2$]					(8,0)--(0,0)		
+node[] (A) at (3.5,6) {}
+node[] (B) at (5.5,6) {}
+(A) to [open, v<=$V_1$] (B)		
+node[] (C) at (8.5,4) {}
+node[] (D) at (8.5,0) {}
+(C) to [open, v^<=$V_3$] (D)
+;
+\end{circuitikz}
+\end{center}
+
+Avec $R_1=R_2=R$, $R_3=2R$ et $R_4=100R$ où $R$ est une valeur de résistance quelconque (différente de $0$)
+	
+\vspace{10pt}
+
+\Question
+{
+%question
+\textit{Sans résoudre le circuit, pour chaque question (4 questions), entourer la bonne réponse parmi les trois possibilités:}\\
+1) \hspace{1cm} $V_2 > V_1$ \hspace{1cm}  $V_2 = V_1$ \hspace{1cm} $V_2 < V_1$\\
+2) \hspace{1cm} $V_2 > V_3$ \hspace{1cm}  $V_2 = V_3$ \hspace{1cm} $V_2 < V_3$\\
+3) \hspace{1cm}  $i_1 > i_2$ \hspace{1.25cm}  $i_1 = i_2$ \hspace{1.25cm} $i_1 < i_2$\\
+4) \hspace{1cm} $i > i_2$ \hspace{1.4cm}  $i = i_2$ \hspace{1.4cm} $i < i_2$\\
+}
+{%correction
+\textbf{$V_2 = V_1$},
+\textbf{$V_2 < V_3$},
+\textbf{$i_1 > i_2$}, et 
+\textbf{$i > i_2$}.
+\begin{itemize}
+\item Le but de cet exercice est de vous permettre de vérifier si votre intuition est un bon guide... ou vous induit plutôt en erreur (et sur quoi précisément). Il est donc important d'essayer de trouver les réponses sans résoudre explicitement le circuit, et de comparer avec la résolution ensuite.
+\item 1) $V_1$ et $V_2$ sont en parallèle, donc leurs ddps sont identiques
+\item 2) A première vue, on peut être tenté de pense que $V_2>V_3$ car $R_4$ (sur laquelle est prise $V_2$) est $>(R_1+R_2)$. C'est oublier qu'il y a une résistance $R_3$ en parallèle sur $R_4$, et que la majorité du courant passera dans $R_3$. Le courant dans $R_4$ et dans $R_1/R_2$ ne sont pas du tout les mêmes.
+\item 3) car $R_3<<R_4$
+\item 4) $i$ est la somme de $i_1$ et $i_2$ qui sont tous les deux positifs
+\item ... voir confirmations par calcul rigoureux ci-dessous
+\end{itemize}
+}
+%{%assistant
+%On s’attend à ce que l’étudiant pense que le fait d’avoir une grande résistance $R_4$ diminue fortement le courant délivré par la source, négligeant l’influence de $R_3$ de faible valeur par rapport à $R_4$. La notion d’équipotentielle est abordée (via $V_2=V_3$ mais dont la longueur des flèches peut induire l’étudiant en erreur) et la connaissance « qualitative » de la loi des nœuds est vérifiée.  
+%}
+
+\Question
+{%Question
+\textit{Calculer le courant $i$ délivré par la source ainsi que les courants $i_1$ et $i_2$, et les tensions $V_2$ et $V_3$.}
+}
+{%Corrigé
+$i_{source}=\frac{E}{R_{éq}}$\\
+$R_{éq}=R_1+R_2+\frac{R_3 R_4}{R_3+R_4}=2R+\frac{200R}{102}=(2+\frac{200}{102})R=3,96R$\\
+$V_3=(R_1+R_2)i=\frac{2E}{2+\frac{200}{102}}=0,505E$\\
+$V_2=E-V_3=E(1-\frac{2}{2+\frac{200}{102}})=0,495E$\\
+$V_1=V_2$\\
+$i_1=\frac{V_2}{R_3}=\frac{E}{R_3}(1-\frac{2}{2+\frac{200}{102}})=\frac{E}{2R}(1-\frac{2}{2+\frac{200}{102}})$\\
+$i_2=i-i_1=\frac{V_2}{R_4}=\frac{E}{R_4}(1-\frac{2}{2+\frac{200}{102}})=\frac{E}{100R}(1-\frac{2}{2+\frac{200}{102}})=\frac{i_1}{50}$
+}
+{%Assistant
+%/
+%}
+
+\Question
+{%Question
+\textit{Comparer les résultats obtenus avec vos réponses aux questions précédentes.}
+}
+{%Corrigé
+La présence de grandes résistances dans un circuit n'est pas synonyme d'un petit courant fourni par la source. En effet, la résistance $R_4$ est très élevée mais la résistance $R_3$, placée en parallèle avec $R_4$, permet le passage de la majorité d'un courant important provenant de la source. Le courant $i_2$ est bien moins important que le courant $i_1$ (facteur $50$).
+}
+%{%Assistant
+%L’étudiant doit comparer ses prédictions à ses résultats et en déduire, sans qu’on lui dise, que la présence de grandes résistances n’est pas synonyme d’un petit courant fourni par la source.
+%}
+
+\subsection{Predict-Observe-Explain 2}
+%\ifthenelse{\boolean{assistant}}
+%{\color{blue} Exercice prioritaire \\ Timing: 10min \\
+%
+%Le but est de déstabiliser l’étudiant avec une configuration de fils peu commune. Il doit, seul, pouvoir identifier la configuration simple des deux circuits (mise en parallèle). La notion d’équipotentielle des fils est exploitée. L’exercice exploite la méthode prédiction-calculs-interprétations des résultats et comparaison des résultats obtenus avec les prédictions.\\ \color{black}}{}
+
+Considérer les deux circuits suivants:
+%\begin{multicols*}{2} 
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   -- (0,3) -- (1,3)
+(1,2)   -- (1,4)
+(1,2)   to[R, *-*, l=$R$] (5,2)
+(1,2)   to[R, l=$R$] (5,4)
+(1,4)   to[R, *-*, l=$R$] (5,4)--(5,2)
+(5,3)--(6,3)--(6,0)
+(0,0)		to[battery1, l_=$E$, i_=$i_a$] (6,0)
+(3,5.5) node[]{Circuit a}
+;
+\end{circuitikz}
+\hspace{1cm}
+%\end{center}
+%\newpage 
+%\begin{center}
+\begin{circuitikz} \draw
+(0,0)   -- (0,3) -- (1,3)
+(1,2)   -- (1,4)
+(1,2)   to[R, *-*, l=$R$] (5,2)
+(1,2)   to[R, l=$R$] (5,4)
+(1,4)   to[R, *-*, l=$R$] (5,4)--(5,2)
+(1,4)   to[R, l_=$R$] (3,3)--(5,2)
+(5,3)--(6,3)--(6,0)
+(0,0)		to[battery1, l_=$E$, i_=$i_b$] (6,0)
+(3,5.5) node[]{Circuit b}
+;
+\end{circuitikz}
+\end{center}
+%\end{multicols*}
+
+\Question
+{%Question
+\textit{Sans résoudre les circuits, lequel des deux verra apparaître le courant le plus important fourni par la source?}
+}
+{%Corrigé
+Le circuit $b$. L’ajout d’une résistance ne mène pas toujours à une diminution du courant fourni par la source. Dans les deux circuits $a$ et $b$, les résistances sont toutes placées en parallèle. Cependant, le circuit $a$ en compte 3 alors que le circuit $b$ en compte 4.
+}
+%{%Assistant
+%On s’attend à ce que l’étudiant réponde que le circuit où le plus grand nombre de résistances se trouve mènera à un courant délivré par la source moins important. On vise donc à détruire la préconception selon laquelle l’ajout d’une résistance mène toujours à une diminution du courant fourni par la source.
+%}
+
+\Question
+{%Question
+\textit{Calculer le courant fourni par la source pour chaque circuit.}
+}
+{%Corrigé
+Simplifier le circuit: les schémas $a$ et $b$ de départ son d'une configuration inutilement complexe, graphiquement parlant. Il vaut mieux réécrire le circuit selon les schémas suivants:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   -- (0,3) -- (1,3)
+(1,2)   -- (1,4)
+(1,2)   to[R, *-*, l=$R$] (5,2)
+(1,3)   to[R, *-*, l=$R$] (5,3)
+(1,4)   to[R, *-*, l=$R$] (5,4)--(5,2)
+(5,3)--(6,3)--(6,0)
+(0,0)		to[battery1, l_=$E$, i_=$i_a$] (6,0)
+(3,5.5) node[]{Circuit a}
+;
+\end{circuitikz}
+\hspace{1cm}
+%\end{center}
+%\newpage 
+%\begin{center}
+\begin{circuitikz} \draw
+(0,0)   -- (0,3) -- (1,3)
+(1,2)   -- (1,4)
+(1,2)   to[R, *-*, l_=$R$] (5,2)
+(1,3.5)   to[R, *-*] (5,3.5)
+(1,4)   to[R, *-*, l=$R$] (5,4)--(5,2)
+(1,2.5)   to[R, *-*, l=$R$] (5,2.5)
+(5,3)--(6,3)--(6,0)
+(0,0)		to[battery1, l_=$E$, i_=$i_b$] (6,0)
+(3,5.5) node[]{Circuit b}
+;
+\end{circuitikz}
+\end{center}
+Le courant fourni par la source du circuit $a$ est $\frac{3E}{R}$.\\
+Le courant fourni par la source du circuit $b$ est $\frac{4E}{R}$.\\
+Le courant fourni par la source du circuit $a$ est donc inférieur au courant fourni par la source du circuit $b$.\\
+}
+%{%Assistant
+%/
+%}
+
+\Question
+{%Question
+\textit{La disposition des éléments dans les deux circuits simplifie-t-elle la résolution des circuits?}
+}
+{%Corrigé
+Il est utile de simplifier le circuit avant de le résoudre pour se concentrer sur l'objectif de la question. Comme dans l'exercice précédent, l'ajout d'une résistance dans un circuit n'entraîne pas systématiquement une augmentation de la résistance totale équivalente vue depuis le source. En effet, ici, le circuit $b$ contient plus de résistances (en nombre d'éléments) mais conduit à une résistance équivalente plus faible du point de vue de la source, menant à un courant tiré de la source plus élevé que dans le cas du circuit $a$.
+}
+%{%Assistant
+%L’étudiant doit conclure de cet exercice qu’il est primordial de simplifier le circuit avant de le résoudre, tant en calculant des résistances équivalentes qu’en réécrivant proprement le circuit de manière à avoir des fils posés proprement (proprement = tous les fils sont parallèles ou à 90° entre eux, mais pas à 45° comme dans les deux circuits présentés). Il doit également conclure que l’ajout d’une résistance peut mener à un courant délivré par la source plus important.
+%}
+
+%\ifthenelse{\boolean{corrige}}{\newpage}{}
+\subsection{Démonstration 1}
+%\ifthenelse{\boolean{assistant}}
+%{\color{blue} Exercice prioritaire \\ Timing: 15min \\ \color{black}}{}
+Pour le circuit ci-dessous:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   -- (0,3) -- (1,3)
+(1,2)   -- (1,4)
+(1,2)   to[R, *-*, l=$R_3$] (3,2) to[R, *-*, l=$R_4$] (5,2)
+(1,4)   to[R, *-*, l=$R_1$] (3,4) to[R, *-*, l=$R_2$] (5,4)--(5,2)
+(5,3)--(6,3)--(6,0)
+(0,0)		to[battery1, l_=$E$, i_=$i$] (6,0)
+(3,2)--(3,4)
+(3.3,3) node[]{(1)}
+;
+\end{circuitikz}
+\end{center}
+
+La connexion verticale (1) est une équipotentielle et ne peut donc pas être parcourue par un courant. En effet, la loi d’Ohm renseigne que V=RI, ce qui implique que s’il n’y a pas de chute de potentiel, il n’y a pas de courant. Comme il n’y a pas de courant, le circuit précédent est équivalent à celui-ci :
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   -- (0,3) -- (1,3)
+(1,2)   -- (1,4)
+(1,2)   to[R, *-*, l=$R_3$] (3,2) to[R, *-*, l=$R_4$] (5,2)
+(1,4)   to[R, *-*, l=$R_1$] (3,4) to[R, *-*, l=$R_2$] (5,4)--(5,2)
+(5,3)--(6,3)--(6,0)
+(0,0)		to[battery1, l_=$E$, i_=$i$] (6,0)
+;
+\end{circuitikz}
+\end{center}
+Étant donné que $R1$ est en série avec $R2$ et que $R3$ est en série avec $R4$, et que ces deux groupes ($R1+R2$) et ($R3+R4$) sont en parallèle, on déduit que le courant $i$ fourni par la source $E$ vaut:
+$$i=\frac{E}{\frac{(R_1+R_2)(R_3+R_4)}{R_1+R_2+R_3+R_4}}$$
+
+\Question
+{%Question
+\textit{Démontrer que ce raisonnement est erroné.}
+}
+{%Corrigé
+La connexion verticale ne peut pas de tout être supprimée car elle est parcourue (en tout cas, elle peut l'être) par un courant. La loi d'Ohm $V=RI$ peut être appliquée, mais dans celle-ci $R=0$ et $V=0$, de sorte que $i$ peut être non nul.\\
+N.B.: Si l'on prend le cas où toutes les résistances sont égales, pensez-vous qu'on puisse supprimer le fil (1)?
+}
+%{%Assistant
+%L’exercice se base sur une fausse démonstration. Elle fait appel à des résultats que l’étudiant devrait juger corrects. Il est essentiel que l’étudiant vérifie chacune des informations fournies dans la fausse démonstration –encouragez la discussion entre étudiants. On s’attend, entre autres, que l’étudiant vérifie de nombreuses fois la formule du i en fin de démonstration, ce qui lui permettra par la même occasion de s’approprier les deux formules de mise en série et en parallèle de résistances. La loi d’Ohm est très connue par les étudiants, et on s’attend à ce qu’ils l’utilisent hors de son domaine de validité.
+%}
+
+\subsection{Simplification}
+%\ifthenelse{\boolean{assistant}}
+%{\color{blue} Exercice non prioritaire \\ Timing: 10min \\
+%L’exercice vise à déstabiliser l’étudiant car ce circuit sera (sans doute) visuellement plus complexe que tous les circuits qu’il aura vus jusqu’ici. Il sera déstabilisé et sera donc poussé à reconnaître qu’il a des connaissances et compétences à mobiliser pour improviser correctement. On s’attaque à la préconception selon laquelle tous les éléments électriques sont soit en parallèle soit en série.\\ \color{black}}{}
+\Question
+{%Question
+\textit{Deux types de configuration de résistances ont été vus en BA1: les résistances en série et les résistances en parallèle. Pourquoi ces notions sont-elles utiles pour résoudre un circuit électrique?}
+}
+{%Corrigé
+La notion de résistance équivalente série et parallèle est utile pour simplifier un schéma afin de calculer plus efficacement les grandeurs recherchées. Il est néanmoins important de se rendre compte que deux résistances connectées peuvent n'être ni en série ni en parallèle.
+}
+%{%Assistant
+%/
+%}
+
+Dans le circuit suivant, où toutes les sources sont égales à $E$ et toutes les résistances à $R$,
+\begin{center}
+\begin{circuitikz} \draw
+(0,6)   to[battery1] (0,4) to[battery1] (0,2) to[battery1] (0,0)
+(0,6)--(2,6)--(2,4)
+(0,0)--(2,0)to[R] (2,4)to[R] (4,4) to[R](6,4)
+(2,0)to[R](4,0)to[R](4,4)
+(2,6)to[R](6,6)--(6,4)to[R](8,4)to[R](10,4)to[R](12,4)
+(4,0)to[R](10,0)to[R](14,0)--(14,6)to[R](12,6)--(12,4)to[R](14,4)
+(6,6)to[R](8,6)--(8,4)
+;
+\end{circuitikz}
+\end{center}
+\Question
+{%Question
+\textit{Identifier les parties de circuit qui peuvent être redessinées en utilisant les notions de configurations en parallèle et en série. Dessiner le schéma simplifié qui en résulte.}
+}
+{%Corrigé
+Les résistances encadrées sont en série, et celles entourées sont en parallèle:
+\begin{center}
+\begin{circuitikz}[scale=0.8] \draw
+(0,6)   to[battery1] (0,4) to[battery1] (0,2) to[battery1] (0,0)
+(0,6)--(2,6)--(2,4)
+(0,0)--(2,0)to[R] (2,4)to[R] (4,4) to[R](6,4)
+(2,0)to[R](4,0)to[R](4,4)
+(2,6)to[R](6,6)--(6,4)to[R](8,4)to[R](10,4)to[R](12,4)
+(4,0)to[R](10,0)to[R](14,0)--(14,6)to[R](12,6)--(12,4)to[R](14,4)
+(6,6)to[R](8,6)--(8,4)
+;
+\draw[dashed] (8.2,3.5) -- (8.2,4.5)--(11.8, 4.5)--(11.8,3.5)--(8.2,3.5);
+\draw[dashed] (5.2,-0.5) -- (5.2,0.5)--(13.8, 0.5)--(13.8,-0.5)--(5.2,-0.5);
+\draw[dashed] (7,5)circle(1.3);
+\draw[dashed] (13,5)circle(1.3);
+\end{circuitikz}
+\end{center}
+
+Il en résulte le schéma suivant, où 4 résistances sont encore en série et où la source de tension équivalente a été calculée (trois fois la même source de tension en série):
+\begin{center}
+\begin{circuitikz}[scale=0.8] \draw
+(0,0)   to[battery1, l=$3E$, invert](0,6)--(2,6)--(2,4)
+(0,0)--(2,0)to[R] (2,4)to[R] (4,4) to[R](6,4)
+(2,0)to[R](4,0)to[R](4,4)
+(2,6)to[R](6,6)--(6,4)to[R, l=$R/2$](8,4)to[R, l=$2R$](12,4)
+(4,0)to[R, l=$2R$](14,0)--(14,4)to[R, l=$R/2$](12,4)
+;
+\draw[dashed] (6.2,-0.5) -- (6.2,5)--(14.2, 5)--(14.2,-0.5)--(6.2,-0.5);
+\end{circuitikz}
+\end{center}
+Ce schéma peut alors encore être simplifié étant donné la présence de 4 résistances en série encadrées. Il en résulte le schéma suivant:
+\begin{center}
+\begin{circuitikz}[scale=0.8] \draw
+(0,0)   to[battery1, l=$3E$, invert](0,6)--(2,6)--(2,4)
+(0,0)--(2,0)to[R] (2,4)to[R] (4,4) to[R](6,4)
+(2,0)to[R](4,0)to[R](4,4)
+(2,6)to[R](6,6)--(6,4)to[R, l=$5R$](6,0)--(4,0)
+;
+\end{circuitikz}
+\end{center}
+
+}
+%{%Assistant
+%/
+%}
+
+
+
+\textit{Il est impossible de réduire le schéma précédent à celui-ci:}
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[battery1, l=$E_{totale_{\acute{e}quivalente}}$, invert] (0,3)--(2,3)
+(0,0)--(2,0) to[R, l_=$R_{totale_{\acute{e}quivalente}}$] (2,3)
+;
+\end{circuitikz}
+\end{center}
+\Question
+{%Question
+\textit{Expliquer pourquoi cette affirmation (écrite en italique) est incorrecte.}
+}
+{%Corrigé
+Dans le dernier schéma redessiné, il reste des résistances qui ne sont ni en série, ni en parallèle. Ceci n'empêche pas de trouver par calcul une valeur de résistance équivalente, qui est simplement la ddp de la source divisée par le courant fourni par la source: $\frac{E_{totale_{\acute{e}quivalente}}}{I_{totale_{\acute{e}quivalente}}}=\frac{3E}{I_{totale_{\acute{e}quivalente}}}$.
+}
+%{%Assistant
+%L’étudiant devrait alors comprendre que calculer le rapport Etotal/itotal permet de calculer une résistance équivalente, après avoir résolu le circuit entièrement. Il doit déduire que la préconception traitée n’est pas correcte (tous les éléments sont soit en série, soit en parallèle).
+%}
+
+\subsection{Démonstration 2}
+%\ifthenelse{\boolean{assistant}}
+%{\color{blue} Exercice prioritaire \\ Timing: 15min \\ \color{black}}{}
+Pour le schéma suivant, avec $R=100 \Omega$, $E_1=100V$ et $E_2=50V$,
+\begin{center}
+\begin{circuitikz} \draw
+(0,3)   to[battery1, v_<=$E_1$, i<=$i$] (0,0)
+(0,3)--(1,3)to[R, l=$R$, v>=$V_R$](3,3)--(4,3)
+(0,0)--(4,0) to[battery1, v_>=$E_2$,invert] (4,3)
+;
+\end{circuitikz}
+\end{center}
+Comme les tensions $E_1$ et $E_2$ sont de polarité opposée, en utilisant la loi des mailles, nous trouvons que $E_1 + V_R = E_2$.\\
+
+De ceci, nous déduisons, puisque $V_R=Ri$, $i =-0,5A$\\
+
+La puissance liée à la source $E_1$ vaut donc $p(E_1)=i*E_1 = -0,5 A * 100 V = -50 W$.\\
+Étant donné que cette puissance est négative, nous en déduisons que $E_1$ agit comme une charge. En effet, pour une puissance positive, une source fournit de l'énergie au circuit (typiquement, la batterie se décharge), alors que pour une puissance négative, la source consomme de l'énergie du circuit (typiquement, la batterie est chargée). Comme l'énergie ne peut pas venir de nulle part, nous en déduisons que $E_2$ est une source.\\
+
+Cependant, selon le circuit suivant :
+\begin{center}
+\begin{circuitikz} \draw
+(0,3)   to[battery1, v_<=$E_1$, i<=$i$] (0,0)
+(0,3)--(1,3)to[R, l=$R$, v<=$V_R$](3,3)--(4,3)
+(0,0)--(4,0) to[battery1, v_>=$E_2$,invert] (4,3)
+;
+\end{circuitikz}
+\end{center}
+L’équation de maille devient : $E_1 = V_R + E_2$ menant à un courant $i=+0,5A$. Nous en déduisons que la puissance associée à la source $E_1$ vaut $p(E_1)= i*E_1 = +0,5A * 100 V = 50W$.\\
+Comme la puissance est positive, la source $E_1$ est une source. Nous en déduisons que $E_2$ agit comme une charge pour respecter le principe de conservation de l'énergie.
+\Question
+{%Question
+\textit{Comment peut-on expliquer cette contradiction ? }
+}
+{%Corrigé
+Cet exercice se base sur le principe de la fausse démonstration. Il met l'accent sur l'importance des conventions de signes et de flèches associés aux grandeurs électriques. Les conventions générateur/récepteur devraient ressortir comme étant indispensables.\\
+
+Dans les deux cas, les lois des mailles sont correctement écrites. Par contre, pour le premier schéma, on doit écrire, vu les sens des tensions et courants choisis, $V_R=-RI$, ce qui donne $i=+0,5A$ et donc la même réponse que pour le second schéma.\\
+
+En effet: pour une résistance, en écrivant la loi constitutive, si la tension est définie dans le sens opposé du courant, la loi est $V=RI$. Si la tension est définie dans le même sens que le courant, la loi est $V=-RI$. On ne peut donc pas écrire la loi $V=RI$ sans faire attention au sens du courant et de la tension utilisés (et à fortiori si on n'a défini aucun sens!). L'utilisation systématique des conventions générateur et récepteur permet justement d'éviter de faire des erreurs de ce type.
+}
+%{%Assistant
+%Cet exercice se base sur le principe de la fausse démonstration. Il met l’accent sur l’importance des conventions de signes et de flèches associés aux grandeurs électriques. Les conventions générateur/récepteur devraient ressortir comme étant indispensables par l’étudiant, pour faute de pouvoir démontrer un résultat qui n’est pas correct. L’étudiant devrait être perturbé par ceci : il/elle a l’habitude de voir que les flèches associées à la tension de la charge et de la source pour un simple circuit « 1 source, 1 résistance », doivent être opposés. On exploite cette idée là dans cet exercice. Les résultats paraîtront logiques à l’étudiant. Posez des questions aux étudiants pour favoriser la discussion entre eux et avec vous, mais n’indiquez pas l’endroit où la démonstration utilise des résultats erronés.
+%}
+
+\subsection{Du circuit aux équations}
+%\ifthenelse{\boolean{assistant}}
+%{\color{blue} Exercice non prioritaire \\ Timing: 10min \\ \color{black}}{}
+Soit le circuit suivant:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[battery1, v=$10V$, invert] (0,2)to[R, l=$3\Omega$](4,5)to[battery1,v=$20V$, invert](10,5)
+(0,0)--(10,0)to[battery1,v=$5V$, invert](10,2)to[R,l=$3\Omega$](10,4)--(10,5)
+(0,2) to[R,l=$3\Omega$](6,3)to[R,l=$3\Omega$](10,4)
+(6,0)to[R,l=$3\Omega$](6,1.5)to[battery1,v=$30V$, invert](6,3)
+;
+\end{circuitikz}
+\vspace{1cm}
+\end{center}
+\Question
+{%Question
+\textit{Écrire les équations de Kirchhoff de ce circuit. Indiquer quelles sont les charges et quelles sont les sources selon les conventions utilisées. Ne pas résoudre les équations.}
+}
+{%Corrigé
+Simplifiez d'abord le circuit visuellement parlant. On arrive au schéma de gauche:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)--(0,2)   to[battery1, v=$10V$, invert] (0,4)to[R, l=$3\Omega$](2,4)
+(2,0)to[R, l=$3\Omega$](2,2)   to[battery1, v=$30V$, invert] (2,4)to[R, l=$3\Omega$](4,4)
+(4,0)to[R, l=$3\Omega$](4,2)   to[battery1, v=$5V$, invert] (4,4)--(4,6)
+(0,0)--(4,0)
+(0,4)--(0,6)to[R, l=$3\Omega$](2,6)   to[battery1, v=$20V$, invert] (4,6)
+;
+\end{circuitikz}
+%\end{center}
+%\begin{center}
+\begin{circuitikz} \draw
+(0,0)--(0,2)   to[battery1, v=$E_1$, i>=$i_1$, invert] (0,4)to[R, v<=$V_{R_5}$, i=$i_5$](2,4)
+(2,0)to[R, v<=$V_{R_2}$](2,2)   to[battery1, v=$E_2$, i>=$i_2$, invert] (2,4)to[R, v<=$V_{R_6}$, i=$i_6$](4,4)
+(4,0)to[R, v<=$V_{R_5}$](4,2)   to[battery1, v=$E_3$, i>=$i_3$, invert] (4,4)--(4,6)
+(0,0)--(4,0)
+(0,4)--(0,6)to[R, v<=$V_{R_4}$, invert](2,6)   to[battery1, v=$E_4$, i>=$i_4$, invert] (4,6)
+;
+\end{circuitikz}
+\end{center}
+
+Ensuite, il faut définir les tensions et les courants (schéma de droite)\\
+En respectant les conventions récepteur-générateur systématiquement: on définit tous les courants puis on définit les tensions dans le même sens pour l'élément source, et dans le sens opposé pour l'élément résistance.\\
+Conseil: éviter d'utiliser les valeurs numériques lors de l'écriture d'équations. Même si toutes les valeurs sont fournies directement, nommer les éléments $E_1$, $E_2$,... $R_1$, $R_2$,... pour éviter une source d'erreurs de distraction.
+
+Les 3 équations de mailles sont:
+$$E_1-V_{R_5}-E_2+V_{R_2}=0$$
+$$E_2-V_{R_6}-E_3+V_{R_3}-V_{R_2}=0$$
+$$E_4+V_{R_6}+V_{R_5}-V_{R_4}$$
+
+Les équations de nœuds sont (3 suffisent):
+$$i_1-i_4-i_5=0$$
+$$i_5+i_2-i_6=0$$
+$$i_4+i_6+i_3=0$$
+$$-i_1-i_2-i_3=0$$
+
+Et les équations constitutives sont $V_{R_k}=R_k I_k$ pour $k=2,3...,6$ car le courant a toujours un sens choisi opposé à celui de la tension sur le schéma ci-dessus.\\
+
+Souvent, la tension associée à une source continue sera caractérisée par une flèche allant de la borne négative à la borne positive. Dans les deux schémas ci-dessus, cette habitude à été suivie.
+}
+%{%Assistant
+%L’exercice a pour but de déstabiliser les étudiants par une mauvaise représentation des éléments (éléments formant des angles aléatoires entre eux) et de les driller à définir les tensions et courants des éléments suivant une convention. Cela illustre les premières étapes fondamentales pour la résolution d’un circuit électrique (définir i et v et respect des conventions, simplifications (réécriture du circuit, R équivalentes…), poser les équations).
+%}
+
+\Question
+{%Question
+\textit{Comparer les sens définis par un de vos voisins. Cela influence-t-il le résultat ?}
+}
+{%Corrigé
+Le résultat final (c'est-à-dire, les tensions et courants associés aux différents éléments, compte tenu des sens choisis) ne change pas, quels que soient les sens associés aux différents éléments.
+}
+%{%Assistant
+%Cette sous question a pour but de mettre en avant la liberté des étudiants quant aux sens associés aux courants en particulier. Un étudiant pourrait respecter une convention générateur (i et v de même sens) pour la source de 30 V et un autre pourrait lui associer une convention récepteur (i et v de sens opposés). L’étudiant devrait prendre également conscience du fait que changer le sens de la flèche associée un V ou i permet de changer le signe de la grandeur décrite. Ils devraient comprendre que la physique du problème ne changera pas si les résultats sont bien interprétés avec les conventions choisies.
+%}
+
+\subsection{Résolution d'un circuit}
+%\ifthenelse{\boolean{assistant}}
+%{\color{blue} Exercice non prioritaire \\ Timing: 10min \\
+%Le but de la séance est de pouvoir résoudre tout circuit résistif avec sources de tension continue, ce qui est résumé dans cet exercice. Il demande à l’étudiant de respecter la stratégie vue au cours pour résoudre un circuit. Les étudiants devront également donner des noms aux éléments sans qu’on leurs les fournisse.\\ \color{black}}{}
+\Question
+{%Question
+\textit{Écrire votre démarche de résolution de circuits en phrases.}
+}
+{%Corrigé
+Cfr slides du cours
+}
+%{%Assistant
+%/
+%}
+
+Soit le circuit suivant où toutes les sources se le SMS a bien été envoyé par le numéro de téléphone rattaché au comptont égales à $10V$ et toutes les résistances à $10\Omega$:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[battery1, invert] (0,4)to[R](4,4)--(8,4)--(8,3)
+(0,0)--(8,0)--(8,1)
+(4,4) to[battery1, invert](4,2)to[R](4,0)
+(7,3)--(9,3)
+(7,1)--(9,1)
+(7,1)to[R](7,3)
+(9,1)to[R](9,3)
+;
+\end{circuitikz}
+\end{center}
+\Question
+{%Question
+\textit{Trouver tous les courants et toutes les tensions de ce circuit (sources comprises).}
+}
+{%Corrigé
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[battery1, v=$E_1$, i>=$i_1$, invert] (0,4)to[R, l=$R_1$,v<=$V_{R_1}$](4,4)to[short, i=$i_3$](8,4)--(8,3)
+(0,0)--(8,0)--(8,1)
+(4,4) to[battery1, v=$E_2$, i>=$i_2$, invert](4,2)to[R, l=$R_2$,v<=$V_{R_2}$](4,0)
+(7,3)--(9,3)
+(7,1)--(9,1)
+(7,1)to[R, l=$R_3$, v>=$V_{R_3}$, i<^=$i_4'$](7,3)
+(9,1)to[R, l=$R_4$, v>=$V_{R_4}$, i<^=$i_4$](9,3)
+;
+\end{circuitikz}
+\end{center}
+
+$V_{R_4}=V_{R_3}$ et on transforme le schéma en:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[battery1, v=$E_1$, i>=$i_1$, invert] (0,4)to[R, l=$R_1$,v<=$V_{R_1}$](4,4)to[short, i=$i_3$](8,4)--(8,3)
+(0,0)--(8,0)--(8,1)
+(4,4) to[battery1, v=$E_2$, i>=$i_2$, invert](4,2)to[R, l=$R_2$,v<=$V_{R_2}$](4,0)
+(8,1)to[R, l=$R_{eq}$, v>=$V_{R_3}$](8,3)
+
+;
+\end{circuitikz}
+\end{center}
+Les équations de maille sont, selon les sens pour les $i$ et $v$ choisis sur le schéma:
+\begin{center}
+$E_1+E_2=V_{R_1}+V_{R_2}$ et $E_2=V_{R_2}-V_{R_3}$
+\end{center}
+La loi des noeuds:
+$$i_1-i_2-i_3=0$$
+Et les équations constitutives sont, selon les sens choisis pour les $i$ et $v$ sur le schéma (respect de la convention récepteur sur les résistances):\\
+$V_{R_1}=R_1 i_1$, $V_{R_2}=R_2 i_2$ et $V_{R_3}=R_3 i_3$
+On trouve donc:
+$$E_1+E_2=R_1 i_1 + R_2 i_2$$
+$$E_2=R_2 i_2-R_3(i_1-i_2)$$
+Résultats finaux pour les valeurs choisies:
+$$E_1=10V=E_2$$
+$$i_1=i_2=1A$$
+$$i_3=0A=i_4'=i_4$$
+$$V_{R_3}=0V=V_{R_4}$$
+$$V_{R_1}=10V=V_{R_2}$$
+}
+%{%Assistant
+%/
+%}
+
+
+\Question
+{%Question
+\textit{Comment vérifier ces résultats numériques ? Choisir une méthode pour vérifier les résultats.}
+}
+{%Corrigé
+La conservation de l'énergie peut être utilisée via un bilan de puissance. Remarquer que c'est un critère nécessaire mais non suffisant pour vérifier vos résultats, mais il est, en pratique, peu probable de se tromper de telle manière que le bilan de puissance soit tout de même correct.\\
+
+Suivant les conventions de signes choisies sur le schéma, le bilan de puissance s'écrit:
+$$p(E_1)+p(E_2)=p(V_{R_1})+p(V_{R_2})$$
+soit $10W+10W=10W+10W$, le bilan de puissance est donc respecté.
+}
+%{%Assistant
+%Les étudiants devraient penser en particulier à la conservation de l’énergie et faire un bilan de puissance.
+%}
+
+\Question
+{%Question
+\textit{Quels éléments agissent comme des sources et quels éléments agissent comme des charges?}
+}
+{%Corrigé
+Si vous choisissez de mettre le courant dans le même sens que la tension, et que vous supposez que les valeurs numériques obtenues via ce choix seront positives, alors vous supposez que l'élément se comportera comme une charge.\\
+
+Dans ce cas-ci, les sources sont: $E_1$ et $E_2$. Et les charges sont: les résistances $R_1$ et $R_2$.\\
+
+Attention, il pourrait très bien arriver qu'une source joue le rôle de charge (par contre une résistance ne deviendra jamais une source).
+}
+%{%Assistant
+%Accent placé sur les conventions générateurs/récepteurs : l’interprétation des signes est très importante.
+%}
+
+\Question
+{%Question
+\textit{Si une des deux sources était polarisée dans le sens inverse de celui indiqué sur le schéma, y aurait-il encore un courant dans le circuit ?} 
+}
+{%Corrigé
+Dès le moment où, en suivant les conventions de signe choisies sur le schéma ci-dessus, la source $E_1$ est différente de la source $E_2$ (même si la valeur absolue est la même), les trois courants $i_1$, $i_1$ et $i_1$ seront différents de zéro.
+}
+%{%Assistant
+%Passer rapidement sur les équations de Kirchhoff en demandant aux étudiants ce qui change, sans résoudre les équations.
+%}
+
+\end{document}

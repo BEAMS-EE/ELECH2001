@@ -1,0 +1,606 @@
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-2001] Électricité\\ TP \no 4 : Théorèmes de superposition et de Thévenin, et Mutuelles\ifthenelse{\boolean{corrige}}{~-- corrigé}{}}
+\rhead{v1.0.2\\ page \thepage}
+\cfoot{}
+%%
+
+\pdfinfo{
+/Author (Raoul Sommeillier, ULB -- BEAMS)
+/Title (TP 4 ELEC-H-2001, Théorème de superposition, théorème de Thévenin et Mutuelles)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={TP 4 [ELEC-H-2001] Électricité : Théorème de superposition, théorème de Thévenin et Mutuelles},
+pdfauthor={Raoul Sommeillier, ©2018 ULB - BEAMS  },
+%pdfsubject={filtrage et analyse fréquentielle}
+}
+
+%\date{\vspace{-1cm}\mydate\today}
+%\title{\vspace{-2cm} Labo \no 6\\ Électronique appliquée [ELEC-H-301]\\Réalisation d'un ampli à transistor\ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+%\author{\vspace{-1cm}}%\textsc{Yannick Allard}}
+
+\setlength{\parskip}{0.5cm plus4mm minus3mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+
+\begin{document}
+
+\tptitle{}{Séance 4~: Théorème de superposition, théorème de Thévenin et Mutuelles}
+
+\section{Pré-requis}
+Avant la séance, vous aurez lu attentivement l'énoncé de la manipulation. Vous aurez par ailleurs relu les chapitres et sections suivants:
+\begin{itemize}
+	\item Chapitre 3 - Quadripôles idéaux
+		\begin{itemize}
+		\item Section 3.3 - Inductance mutuelle et transformateur idéal
+		\end{itemize}
+	\item Chapitre 4 - Équivalence de Thévenin et adaptation d’impédance
+		\begin{itemize}
+		\item Section 4.1 - Circuits équivalents et théorèmes de Thévenin/Norton
+			\begin{itemize}
+			\item 4.1.2 Théorème et équivalent de Thévenin (Exemple : Retour sur le diviseur résistif)
+			\end{itemize}
+		\end{itemize}
+	\item Chapitre 5 - Résoudre un circuit : procédure de base et accélérateurs
+		\begin{itemize}
+		\item Section 5.1 - Vocabulaire lié aux circuits
+			\begin{itemize}
+			\item 5.1.4 Maille
+			\end{itemize}
+		\item Section 5.2 - Lois de Kirchhoff
+		\item Section 5.8 - Théorème de superposition
+		\end{itemize}
+	\item Chapitre 7 - Résoudre un circuit réactif dans le domaine fréquentiel
+		\begin{itemize}
+		\item Section 7.3 - Phaseurs
+		\end{itemize}
+\end{itemize}
+
+\vspace{5pt}
+
+\newpage
+
+\section{Exercices}
+\subsection{Exercice 1}
+
+Le circuit suivant est alimenté par la f.e.m. $e(t)= E_{0}+E_{1}sin(\omega t)+E_{2}sin(2\omega t+\phi)$.
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[sV, v=$e(t)$] 	(0,3)--(6,3)
+		to[C, l=$C$] (6,1.5)
+		to[R, l=$R_C$] (6,0)--(0,0)
+(3,3)   to[L, l=$L$] (3,1.5)
+		to[R, l=$R_L$](3,0)
+;
+\end{circuitikz}
+\end{center}
+
+\Question
+{%Question
+\textit{Déterminer les expressions temporelles des courants de chaque branche du circuit.}
+}
+{%Corrig
+Étant donné qu'il s'agit d'une f.e.m. composée de signaux à différentes fréquences, nous allons appliquer le théorème de superposition. 
+
+\begin{enumerate}
+
+\item $e(t)=E_{0}$ ($\omega=0\ rad/s$) \\
+Étant donné qu'il s'agit d'une source de tension continue et que nous sommes en régime, une capacité peut être assimilée à un circuit ouvert et une inductance peut être assimilée à un court circuit. Nous avons donc:
+$I_{C_{0}}=0$ et $I_{L_{0}}=I_{R_L}=\frac{E_{0}}{R_L}$
+
+\item $e(t)=E_{1}sin(\omega t)$ (pulsation: $\omega_1=\omega\ rad/s$)\\
+Il ne s'agit plus d'une source continue et nous sommes en régime. Nous allons donc utiliser les phaseurs.
+$$\underline{I_1}=\underline{I}_{L_{1}}+\underline{I}_{C_{1}}$$
+$$\underline{E}_{1}=(R_{L}+j\omega_{1} L)\underline{I}_{L_{1}}$$
+$$\underline{E}_{1}=(R_{C}+\frac{1}{j\omega_{1} C})\underline{I}_{C_{1}}$$ 
+
+$$\Leftrightarrow \underline{I}_{L_{1}}=\frac{\underline{E}_{1}}{R_{L}+j\omega_{1} L}$$
+$$\hspace{9mm} \underline{I}_{C_{1}}=\frac{j\omega_{1} C\underline{E}_{1}}{1+j\omega_{1} CR_{C}}$$
+
+$$\Leftrightarrow I_{{L}_1}=|\underline{I}_{L_{1}}|=\frac{E_{1}}{\sqrt{R_{L}^{2}+(\omega_1 L)^{2}}}=\frac{E_{1}}{\sqrt{R_{L}^{2}+(\omega L)^{2}}}$$
+$$I_{{C}_1}=|\underline{I}_{C_{1}}|=\frac{\omega_1 CE_{1}}{\sqrt{1+(\omega_1 CR_{C})^{2}}}=\frac{\omega CE_{1}}{\sqrt{1+(\omega CR_{C})^{2}}}$$
+
+$$\Leftrightarrow \phi_{I_{L_{1}}}= Arg(\underline{I}_{L_{1}})=Arg(\underline{E}_1)-Arg(R_{L}+j\omega_{1} L)=0-arctg(\frac{\omega_{1} L}{R_{L}})=-arctg(\frac{\omega L}{R_{L}})$$
+$$\phi_{I_{C_{1}}}= Arg(\underline{I}_{C_{1}})=Arg(j\omega_{1} C)+Arg(\underline{E}_1)-Arg(1+j\omega_{1} CR_{C})=\frac{\pi}{2}+0-arctg(\omega_{1} CR_C)=\frac{\pi}{2}-arctg(\omega CR_C)$$
+
+\item $e(t)=E_{2}sin(2\omega t+\phi)$ (pulsation: $\omega_{2}=2\omega\ rad/s$)\\
+La source se situant au même endroit que précédemment, inutile de refaire tous les calculs. Il suffit de modifier la pulsation et de tenir compte de la phase $\phi$ de la source de tension.\\
+
+$$\underline{I}_{L_{2}}=\frac{\underline{E}_{2}}{R_{L}+j\omega_{2} L}$$
+$$\underline{I}_{C_{2}}=\frac{j\omega_{2} C\underline{E}_{2}}{1+j\omega_{2} CR_{C}}$$
+$$\underline{I}_2=\underline{I}_{L_{2}}+\underline{I}_{C_{2}}$$
+
+$$\Leftrightarrow I_{{L}_2}=|\underline{I}_{L_{2}}|=\frac{E_{2}}{\sqrt{R_{L}^{2}+(\omega_2 L)^{2}}}=\frac{E_{2}}{\sqrt{R_{L}^{2}+(2\omega L)^{2}}}$$
+$$I_{{C}_2}=|\underline{I}_{C_{2}}|=\frac{\omega_2 CE_{2}}{\sqrt{1+(\omega_2 CR_{C})^{2}}}=\frac{2\omega CE_{2}}{\sqrt{1+(2\omega CR_{C})^{2}}}$$
+
+$$\Leftrightarrow \phi_{I_{L_{2}}}= Arg(\underline{I}_{L_{2}})=Arg(\underline{E}_2)-Arg(R_{L}+j\omega_{2} L)=\phi-arctg(\frac{\omega_{2} L}{R_{L}})=\phi-arctg(\frac{2\omega L}{R_{L}})$$
+$$\phi_{I_{C_{2}}}= Arg(\underline{I}_{C_{2}})=Arg(j\omega_{2} C)+Arg(\underline{E}_2)-Arg(1+j\omega_{2} CR_{C})=\frac{\pi}{2}+\phi-arctg(2\omega CR_C)$$
+
+\item Superposition:\\\\
+$$\Rightarrow i_{L}(t)=I_{L_{0}}+ i_{L_{1}}(t)+i_{L_{2}}(t)=\frac{E_{0}}{R_{L}}+I_{{L}_1}sin(\omega t+\phi_{I_{L_{1}}})+I_{{L}_2}sin(2\omega t+\phi_{I_{L_{2}}})$$
+$$=\frac{E_{0}}{R_{L}}+\frac{E_{1}}{\sqrt{R_{L}^{2}+(\omega L)^{2}}}sin(\omega t-arctg(\frac{\omega L}{R_{L}}))+\frac{E_{2}}{\sqrt{R_{L}^{2}+(2\omega L)^{2}}}sin(2\omega t+\phi-arctg(\frac{2\omega L}{R_{L}}))$$
+
+$$\Rightarrow i_{C}(t)=I_{C_{0}}+ i_{C_{1}}(t)+i_{C_{2}}(t)=I_{{C}_1}sin(\omega t+\phi_{I_{C_{1}}})+I_{{C}_2}sin(2\omega t+\phi_{I_{C_{2}}})$$
+$$=\frac{\omega CE_{1}}{\sqrt{1+(\omega CR_{C})^{2}}}sin(\omega t+\frac{\pi}{2}-arctg(\omega CR_C))+\frac{2\omega CE_{2}}{\sqrt{1+(2\omega CR_{C})^{2}}}sin(2\omega t+\frac{\pi}{2}+\phi-arctg(2\omega CR_C))$$
+
+$$\Rightarrow i(t)=i_{C}(t)+i_{L}(t)$$
+\end{enumerate}
+}
+%{%Assistant
+%}
+
+\subsection{Exercice 2}
+
+Soit le circuit suivant, comportant une source de tension $e(t)=2sin(5000t)$ et une source de courant $i_{S}(t)=cos(10000t)$:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[american voltage source, v>=$e(t)$, invert] 	(0,3)
+		to[R, l=$R_1$] (2,3)
+		to[C, l=$C$] (4,3)--(8,3)
+
+		to[american current source, l_=$i_S$] (8,0)--(0,0)
+(4,0)	to[battery1, v>=$3V$, invert] (4,1.5)
+		to[R, l=$R_2$] (4,3)
+(6,0)	to[L, l=$L$] (6,1.5)
+		to[R, l=$R_3$] (6,3)
+node[ocirc] (A) at (8.5,3) {}
+node[ocirc] (B) at (8.5,0) {}
+(B) to [open, v_=$v(t)$] (A)	
+;
+\end{circuitikz}
+\end{center}
+Où $R_1=4\Omega$, $R_2=2 \Omega$, $R_3=4\Omega$, $C=10\mu F$ et $L=1mH$.
+
+\Question
+{%question
+\textit{Déterminer l'expression temporelle de la tension $v(t)$ de ce circuit.}
+}
+{%corrig
+Étant donné qu'il s'agit de différentes sources à différentes fréquences, nous allons appliquer le théorème de superposition.
+
+\begin{itemize}
+
+\item Source continue seule ($\omega = \omega_0 = 0rad/s$): on annule les autres sources \\
+
+Étant donné qu'il s'agit d'une source de tension continue et que nous sommes en régime, une capacité peut être assimilée à un circuit ouvert et une inductance peut être assimilée à un court circuit. Nous avons donc le schéma suivant:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[short, l=$e(t)$] 	(0,3)
+		to[R, l=$R_1$] (2,3)
+		to[open, l=$C$] (4,3)--(8,3)
+
+		to[open, l_=$i_S$] (8,0)--(0,0)
+(4,0)	to[battery1, v>=$3V$, invert] (4,1.5)
+		to[R, l=$R_2$] (4,3)
+(6,0)	to[short, l=$L$] (6,1.5)
+		to[R, l=$R_3$] (6,3)
+node[ocirc] (A) at (8.5,3) {}
+node[ocirc] (B) at (8.5,0) {}
+(B) to [open, v_=$v(t)$] (A)	
+;
+\end{circuitikz}
+\end{center}
+\vspace{3mm}
+Il s'agit alors d'une simple maille avec deux résistances. $v(t)$ est la tension aux bornes de $R_{3}$. Nous avons un diviseur résistif et donc:
+$$v_0(t)=\frac{R_{3}}{R_{2}+R_{3}}10V=2V$$
+
+\item Source de tension $e(t)$ seule ($\omega = \omega_1 = 5000rad/s$) 
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[american voltage source, v>=$e(t)$, invert] 	(0,3)
+		to[R, l=$R_1$] (2,3)
+		to[C, l=$C$] (4,3)--(8,3)
+
+		to[open, l_=$i_S$] (8,0)--(0,0)
+(5,0)	to[generic, l=$Z$] (5,3)
+
+node[ocirc] (A) at (8.5,3) {}
+node[ocirc] (B) at (8.5,0) {}
+(B) to [open, v_=$v(t)$] (A)	
+;
+\end{circuitikz}
+\end{center}
+
+\end{itemize}
+
+Afin de réduire le circuit à une maille, $Z$ est la mise en parallèle de ($R_{3}$ et $L$, en série) avec $R_{2}$.
+$$Z=R_2//(R_3+L)=\frac{R_{2}(R_{3}+j\omega_1 L)}{R_{2}+R_{3}+j\omega_1 L}=1,64.e^{j.11,5^{o}} [\Omega]$$
+	$$\underline{V}=\underline{E}\frac{Z}{R_{1}+\frac{1}{j\omega_1 C}+Z}=0,16.e^{j.85,6^{o}}$$
+	Nous avons donc:
+	$$v_1(t)=0,16.sin(5000t+85,6^{o}) [V]$$
+	\begin{itemize}
+	\item Source de courant $i_{S}(t)$ seule. \\
+	Soit $Z'$ l'impédance vue par la source $i_{S}(t)$.
+	\begin{center}
+	\begin{circuitikz} \draw
+	(0,0)   to[generic, l=$Z'$] 	(0,2)--(2,2)
+			to[american current source, l_=$i_S$] (2,0)--(0,0)
+
+	node[ocirc] (A) at (2.5,2) {}
+	node[ocirc] (B) at (2.5,0) {}
+	(B) to [open, v_=$v(t)$] (A)	
+	;
+	\end{circuitikz}
+	\end{center}
+	$$Z'=(R_1+C)//R_2//(R_3+L)=\frac{1}{\frac{1}{R_{1}+\frac{1}{j\omega_{2}C}}+\frac{1}{R_{2}}+\frac{1}{R_{3}+j\omega_{2}L}}=1,758 [\Omega]$$
+	Compte tenu des sens déjà définis pour v(t) et de $i_S$, ces deux grandeurs correspondent sur Z' à une convention \underline{générateur}. Il faut donc pour Z'utiliser un signe négatif dans la loi d'Ohm généralisée :
+	$$\underline{V}=-Z'\underline{I_{S}}=-1,758$$
+	$$v_2(t)=-1,758cos(1000t) [V]$$
+	Par superposition, la solution totale est donc:\\
+	$$v(t)= v_0(t)+v_1(t)+v_2(t)=2+0,16sin(5000t+85,6^{o})-1,758cos(1000t) [V]$$
+	\end{itemize}
+}
+%{%A
+%}
+
+\subsection{Exercice 3}
+Soit le circuit suivant:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)   to[sV, v>=$e(t)$] 	(0,3)
+		to[R, l=$R$] (2,3)--(6,3)
+		to[generic, l=$Z$, i=$i(t)$] (6,0)--(0,0)
+(2,3)	to[C, l=$C$] (2,0)
+(4,3)	to[R, l=$R$] (4,0)
+;
+\end{circuitikz}
+\end{center}
+
+\Question
+{%Question
+\textit{Déterminer le courant $i(t)$ dans le circuit suivant en appliquant le théorème de Thévenin}.
+}
+{%Cor
+Équivalent de Thévenin du circuit à gauche de $Z$:
+$$Z_{th}=\frac{1}{\frac{1}{R}+\frac{1}{R}+j\omega C}=\frac{R}{2+j\omega CR}$$\\
+La tension $E_{Th}$ est la tension aux bornes de la résistance $R$ verticale (égale à la tension sur $C$, puisque en parallèle). Nous avons donc:
+$$\underline{E}_{Th}=\frac{\frac{R}{1+j\omega CR}\underline{E}}{R+\frac{R}{1+j\omega CR}}=\frac{\underline{E}}{2+j\omega CR}$$
+Pour trouver la valeur du courant dans le circuit, nous relions l'équivalent de Thévenin avec l'impédance $Z$. Nous avons donc:
+$$\underline{I}=\frac{\underline{E}_{Th}}{Z_{Th}+Z}=\frac{\underline{E}}{R+Z(2+j\omega CR)}$$
+}
+{%Assist
+}
+
+\Question
+{%Q
+\textit{Si l'impédance $Z$ est telle que $Z=R+jX$, quelle condition doit satisfaire cette impédance pour que le courant $i(t)$ ne soit pas déphasé par rapport à la source $e(t)=Ecos(\omega t)$?}
+}
+{%C
+Puisque $Z=R+jX$, nous avons:
+$$\underline{I}=\frac{\underline{E}}{(R+2R-\omega CRX)+j(\omega CR^2+2X)}$$
+Un déphasage nul entre le courant et la tension correspond à une partie imaginaire nulle dans l'expression du phaseur $\underline{I}$ ci-dessus. La condition est donc que:
+$$X=-\frac{1}{2}\omega CR^2$$
+}
+{%A
+}
+
+\subsection{Exercice 4}
+Soit un circuit inconnu dont deux bornes sont accessibles. Lors d'une première expérience, les deux bornes sont laissées ouvertes et on mesure une tension de phaseur $\underline{V_{1}}$. Lors d'une deuxième expérience, une résistance $R_{u}$ est connectée et le phaseur associé à la tension mesurée vaut $\underline{V_{2}}$. 
+\begin{center}
+\begin{circuitikz} \draw
+(2,1.75)--(3,1.75)
+(2,0.25)--(3,0.25)
+(0,0)--(0,2)--(2,2)--(2,0)--(0,0)
+node[ocirc] (A) at (3,1.75) {}
+node[ocirc] (B) at (3,0.25) {}
+(B) to [open, v_=$v_1(t)$] (A)
+;
+\end{circuitikz}
+\hspace{1cm}
+\begin{circuitikz} \draw
+(2,1.75)--(3,1.75)--(4.5,1.75) to[R, l=$R_u$] (4.5,0.25)--(3,0.25)
+(2,0.25)--(3,0.25)
+(0,0)--(0,2)--(2,2)--(2,0)--(0,0)
+node[ocirc] (A) at (3,1.75) {}
+node[ocirc] (B) at (3,0.25) {}
+(B) to [open, v_=$v_1(t)$] (A)
+;
+\end{circuitikz}
+\end{center}
+
+
+\Question
+{%Q
+\textit{Déterminer l'équivalent de Thévenin du circuit vu au travers des deux bornes.}
+}
+{%C
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)	to[sinusoidal voltage source, v=$\underline{E}_{th}$] (0,2)
+		to[generic, l=$Z$] (3,2)
+(0,0)--(3,0)
+
+node[ocirc] (A) at (3,2) {}
+node[ocirc] (B) at (3,0) {}
+(B) to [open, v_=$v_1(t)$] (A)
+;
+\end{circuitikz}
+\hspace{1cm}
+\begin{circuitikz} \draw
+(0,0)	to[sinusoidal voltage source, v=$\underline{E}_{th}$] (0,2)
+		to[generic, l=$Z$] (3,2)
+(0,0)--(3,0)
+node[ocirc] (A) at (3,2) {}
+node[ocirc] (B) at (3,0) {}
+(B) to [open, v_=$v_1(t)$] (A)
+(3,2)--(4.5,2)	to[R, l=$R_u$] (4.5,0)--(3,0)
+;
+\end{circuitikz}
+\end{center}
+\begin{itemize}
+\item Pour la première expérience, nous avons un circuit ouvert. Nous avons donc:
+$$\underline{V}_{1}=\underline{E}_{Th}$$
+\item Pour la seconde expérience, $\underline{V}_{2}$ est la tension aux bornes de la résistance $R_{u}$. Nous avons donc:
+$$\underline{V}_{2}=\frac{R_{u}}{R_{u}+Z_{Th}}\underline{E}_{Th}$$ et 
+$$Z_{Th}=R_u(\frac{\underline{E}_{Th}}{\underline{V}_{2}}-1)$$
+\end{itemize}
+}
+{%A
+}
+
+\subsection{Exercice 5}
+Soit le circuit suivant:
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)	to[sinusoidal voltage source, v=$e(t)$] (0,3)
+		to[R, l=$R_1$] (2,3)
+		to[L, l=$L_1$] (4,3)
+		to[L, l=$L_2$] (4,1.5)
+		to[C, l=$C$] (4,0)--(0,0)
+node[circ] (A) at (3.75,1.5) {}
+node[circ] (B) at (2.25,2.75) {}
+(A) to [open, v^=$M$] (B)
+(B) to [open, v=$ $] (A)
+(4,3)	to[R, l=$R_2$] (6,3)
+(4,0)--(6,0)
+node[ocirc] (A) at (6,3) {A}
+node[ocirc] (B) at (6,0) {B}
+;
+\end{circuitikz}
+\end{center}
+
+Valeurs numériques: \\
+\begin{itemize}
+    \item $e(t)=10cos(\omega t)$\ [V]
+    \item $R_{1}=2\Omega$, $R_{2}=2\Omega$
+    \item $\omega L_{1}=4\Omega$, $\omega L_{2}=3\Omega$, $\omega M=2\Omega$ et $\frac{1}{\omega C}=5\Omega$ 
+\end{itemize}
+
+\Question
+{%Q
+\textit{Remplacer ce circuit par son équivalent de Thévenin vu aux bornes A et B.}
+}
+{%C
+\begin{itemize}
+\item \fbox{Détermination de $\underline{V}_{Th}$}\\
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)	to[sinusoidal voltage source, v=$\underline{E}$,i^>=$\underline{I}$] (0,4)
+		to[R, l=$R_1$,v<=$\underline{V}_{R_1}$] (2,4)
+		to[L, l=$L_1$,v<=$\underline{V}_{L_1}$] (4,4)
+		to[L, l=$L_2$,i=$\underline{I}$,v<=$\underline{V}_{L_2}$] (4,2)
+		to[C, l=$C$,v<=$\underline{V}_{C}$] (4,0)--(0,0)
+node[circ] (M1) at (3.75,2) {}
+node[circ] (M2) at (2.25,3.75) {}
+(M1) to [open, v^=$M$] (M2)
+(M2) to [open, v=$ $] (M1)
+(4,4)	to[R, l=$R_2$,v<=$\underline{V}_{R_2}$] (6,4)
+(4,0)--(6,0)
+node[ocirc] (A) at (6,4) {A}
+node[ocirc] (B) at (6,0) {B}
+;
+\end{circuitikz}
+\end{center}
+\vspace{5mm}
+On cherche la tension à vide aux bornes A et B. Aucune charge n'étant branchée entre ces bornes, la tension entre A et B est bien à vide.\\
+Aucun courant ne passe donc dans la résistance $R_2$, on a donc $\underline{V}_{R_2}=0$.\\
+La loi de maille est donc:
+$$\underline{E}=\underline{V}_{R_1}+\underline{V}_{L_1}+\underline{V}_{L_2}+\underline{V}_{C}$$
+Les équations constitutives pour $R_1$ et $C$ sont les suivantes:
+$$\underline{V}_{R_1}=R_1\underline{I}$$
+$$\underline{V}_{C}=\frac{1}{j\omega C}\underline{I}$$
+Attention, les deux symboles d'inductances ne représentent pas deux inductances propres, mais bien, vu la présence de points, représentent ensemble un composant "transformateur" (il y a donc à la fois un effet d'inductance propre et un effet d'inductance mutuelle). La particularité de ce circuit est que les deux accès de ce transformateur sont parcourus par le même courant I (vu les connexions faites par le circuit), mais ceci ne change rien à la méthode à appliquer: les équations du transformateur restent valables. Vu les sens choisis pour les tensions et courants, on peut vérifier que les accès sont tous deux en convention récepteur (ce qui est la situation la plus simple: voir syllabus). Par ailleurs, le courant $\underline{I}$ est le même pour ces deux accès mais il rentre par le point de $L_1$ et sort par le point de $L_2$: dans le système d'équations du transformateur, la partie due à la mutuelle sera donc comptée négativement: 
+$$\underline{V}_{L_1}=j\omega L_1\underline{I}-j\omega M\underline{I}$$
+$$\underline{V}_{L_2}=j\omega L_2\underline{I}-j\omega M\underline{I}$$
+On a donc:
+$$\underline{E}=(R_{1}+j\omega L_{1}-j\omega M+j\omega L_{2}-j\omega M+\frac{1}{j\omega C})\underline{I}$$
+$$\Leftrightarrow \underline{I}=\frac{\underline{E}}{R_{1}+j\omega L_{1}-2j\omega M+j\omega L_{2}+\frac{1}{j\omega C}}$$
+La tension équivalente de Thévenin $\underline{V}_{Th}$ étant celle de la mise en série de $L_2$ et $C$ ($\underline{V}_{R_2}=0$), on a:
+$$\underline{V}_{Th}=\underline{V}_{L_2}+\underline{V}_{C}=(j\omega L_{2}-j\omega M+\frac{1}{j\omega C})\underline{I}=\frac{j\omega (L_{2}-M)+\frac{1}{j\omega C}}{R_{1}+j\omega (L_{1}+L_{2}-2M)+\frac{1}{j\omega C}}\underline{E}$$
+En remplacant par les données de l'énoncé:
+$$\underline{V}_{Th}=10\frac{-4j}{2-2j}=14,14e^{-j45^{o}}$$
+$$v_{Th}(t)=14,14cos(\omega t-45^{o}) [V]$$
+
+\item \fbox{Détermination de $Z_{Th}$}\\
+A nouveau ici les deux symboles d'inductances ne représentent pas deux inductances propres, mais ensemble un composant "transformateur". Nous ne pouvons donc pas calculer $Z_{Th}$ en annulant la source $\underline{E}$ et en trouvant une impédance équivalente par les lois de mise en série et parallèle comme précédemment, car les inductances $L_{1}$ et $L_{2}$ ne peuvent pas être mises en parallèle (elles forment un quadripôle et non deux dipôles) .\\
+
+Nous devons donc utiliser la méthode générale en créant une source de tension virtuelle $\underline{E}'$ entre les bornes A et B parcourue par un courant $\underline{I}'$.\\
+
+L'idée est ensuite d'utiliser la relation $Z_{Th}=\frac{\underline{E'}}{\underline{I'}}$ sur le circuit total afin de trouver l'impédance équivalente de Thévenin.\\
+
+Les courants à prendre en compte dans ce circuit ne sont donc plus les mêmes que précédemment, et un courant passe cette fois dans $R_2$!
+\begin{center}
+\begin{circuitikz} \draw
+(0,0)	to[short,i^<=$\underline{I_1}$] (0,4)
+		to[R, l=$R_1$,v=$\underline{V}_{R_1}$] (2,4)
+		to[L, l=$L_1$,v=$\underline{V}_{L_1}$] (4,4)
+		to[L, l=$L_2$,v<=$\underline{V}_{L_2}$] (4,2)
+		to[C, l=$C$,v<=$\underline{V}_{C}$,i_=$\underline{I_2}$] (4,0)--(0,0)
+node[circ] (M1) at (3.75,2) {}
+node[circ] (M2) at (2.25,3.75) {}
+(M1) to [open, v^=$M$] (M2)
+(M2) to [open, v=$ $] (M1)
+(4,4)	to[R, l=$R_2$,v=$\underline{V}_{R_2}$] (6,4)
+(4,0)--(6,0)
+(6,0) to[sinusoidal voltage source, v_=$\underline{E}'$, i_>=$\underline{I}'$] (6,4)
+node[ocirc] (A) at (6,4) {A}
+node[ocirc] (B) at (6,0) {B}
+;
+\end{circuitikz}
+\end{center}
+\vspace{5mm}
+On a cette fois une loi de noeud et deux lois de mailles:
+$$\underline{I}'=\underline{I}_1+\underline{I}_2$$
+$$\underline{V}_{R_1}+\underline{V}_{L_1}=\underline{V}_{L_2}+\underline{V}_{C}$$
+$$\underline{E}'=\underline{V}_{C}+\underline{V}_{L_2}+\underline{V}_{R_2}$$
+Les équations constitutives pour les résistances et le condensateur sont:
+$$\underline{V}_{R_1}=R_1\underline{I}_{1}$$
+$$\underline{V}_{R_2}=R_2\underline{I}'$$
+$$\underline{V}_{C}=\frac{1}{j\omega C}\underline{I}_{2}$$
+Pour les équations du transformateur: les deux accès sont en convention récepteur. Ils sont maintenant parcourus par deux courants différents (situation standard du transformateur), et les flux correspondants sont concordants (les courants sortent tous les deux par les points représentant la mutuelle). Selon la convention, la partie due à la mutuelle sera donc comptée positivement: 
+$$\underline{V}_{L_1}=j\omega L_1\underline{I}_1+j\omega M\underline{I}_2$$
+$$\underline{V}_{L_2}=j\omega L_2\underline{I}_2+j\omega M\underline{I}_1$$
+On a donc:
+$$R_{1}\underline{I_{1}}+j\omega L_{1}\underline{I_{1}}+j\omega MI_{2}=j\omega L_{2}\underline{I_{2}}+j\omega MI_{1}+\frac{1}{j\omega C}\underline{I_{2}}$$
+$$\underline{E'}=R_{2}\underline{I'}+j\omega L_{2}\underline{I_{2}}+j\omega M\underline{I_{1}}+\frac{1}{j\omega C}\underline{I_{2}}$$
+
+En remplaçant $\underline{I_{2}}=\underline{I'}-\underline{I}_{1}$, on obtient:
+$$(R_{1}+j\omega(L_{1}+L_{2}-2M)+\frac{1}{j\omega C})\underline{I_{1}}=(j\omega(L_{2}-M)+\frac{1}{j\omega C})\underline{I'}$$
+$$\underline{E'}=-(j\omega(L_{2}-M)+\frac{1}{j\omega C})\underline{I_{1}}+(R_{2}+j\omega L_{2}+\frac{1}{j\omega C})\underline{I'}$$
+
+Résolution en valeurs numériques\\
+$(2-2j)\underline{I_{1}}+4j\underline{I'}=0$\\
+$4j\underline{I_{1}}+(3-2j)\underline{I'}=\underline{E'}$\\
+$\Rightarrow \underline{I'}=\frac{2-2j}{18-10j}\underline{E'}$
+$$Z_{Th}=\frac{\underline{E'}}{\underline{I'}}=7,28e^{j.16^{o}}=7+2j [\Omega]$$
+\end{itemize}}
+
+{%A
+}
+
+\subsection{Exercice 6}
+
+Dans le circuit suivant, $e_{1}(t)$, $e_{2}(t)$ et $e_{3}(t)$ sont trois sources sinusoïdales de même fréquence.
+\begin{center}
+\begin{circuitikz} \draw
+(2,2) to[sinusoidal voltage source, v=$e_{1}(t)$] (2,4)--(8,4)
+(2,2) to[sinusoidal voltage source, v=$e_{2}(t)$] (0,0)--(0,-2)--(6,-2)--(6,0)
+(2,2) to[sinusoidal voltage source, v=$e_{3}(t)$] (4,0)--(4,-1)--(10,-1)--(10,0)
+(8,2) to[generic, l=$Z_1$] (8,4)
+(8,2) to[generic, l=$Z_2$] (6,0)
+(8,2) to[generic, l=$Z_3$] (10,0)
+;
+\end{circuitikz}
+\end{center}
+
+%\vspace{3cm}\\
+%
+\Question
+{%Q
+\textit{Utiliser le théorème de superposition pour déterminer les expressions des phaseurs des courants délivrés par chaque source.}
+}
+{%C
+Nous allons appliquer le théorème de superposition en considérant une source à la fois afin de déterminer premièrement le phaseur $\underline{I}_1$ du courant délivré par la source de tension $e_1(t)$.\\
+
+La représentation initiale de ce circuit pour engendre quelques difficultés, il est alors utile de le redessiner et de se rendre compte que les 2 circuits ci-dessous sont équivalents:
+\begin{center}
+\begin{circuitikz}[scale=0.75] \draw
+(2,2) to[sinusoidal voltage source, v=$\underline{E}_1$, i^>=$\underline{I}_1$] (2,4)--(2,5)--(8,5)
+(2,2) to[sinusoidal voltage source, v=$\underline{E}_2$, i^>=$\underline{I}_2$] (0,0)--(0,-2)--(6,-2)--(6,0)
+(2,2) to[sinusoidal voltage source, v=$\underline{E}_3$, i^>=$\underline{I}_3$] (4,0)--(4,-1)--(10,-1)--(10,0)
+(8,2) to[generic, l=$Z_1$, i^<=$\underline{I}_1$] (8,4)--(8,5)
+(8,2) to[generic, l=$Z_2$, i^<=$\underline{I}_2$] (6,0)
+(8,2) to[generic, l=$Z_3$, i^<=$\underline{I}_3$] (10,0)
+node[circ](A) at (2,2){A}
+node[circ](B) at (8,2){B}
+;
+\end{circuitikz}
+\begin{circuitikz}[scale=0.75] \draw
+(0,0) 	to[sinusoidal voltage source, v=$\underline{E}_1$, i^>=$\underline{I}_1$] (0,2)
+		to[generic, l=$Z_1$] (0,4)--(4,4)
+(2,0) 	to[sinusoidal voltage source, v=$\underline{E}_2$, i^>=$\underline{I}_2$] (2,2)
+		to[generic, l=$Z_2$] (2,4)
+(4,0) 	to[sinusoidal voltage source, v=$\underline{E}_3$, i^>=$\underline{I}_3$] (4,2)
+		to[generic, l=$Z_3$] (4,4)
+(0,0)--(4,0)
+node[circ](A) at (2,0){A}
+node[circ](B) at (2,4){B}
+;
+\end{circuitikz}
+\end{center}
+
+
+\begin{itemize}
+\item Source $E_{1}$ seule:
+\begin{center}
+\begin{circuitikz}[scale=0.75] \draw
+(0,0) 	to[sinusoidal voltage source, v=$\underline{E}_1$, i^>=$\underline{I}_{1}^{(1)}$] (0,2)
+		to[generic, l=$Z_1$] (0,4)--(4,4)
+(2,0) 	to[short] (2,2)
+		to[generic, l=$Z_2$] (2,4)
+(4,0) 	to[short] (4,2)
+		to[generic, l=$Z_3$] (4,4)
+(0,0)--(4,0)
+node[circ](A) at (2,0){A}
+node[circ](B) at (2,4){B}
+;
+\end{circuitikz}
+\end{center}
+
+$$\underline{I}_{1}^{(1)}=\frac{\underline{E}_{1}}{Z_{1}+\frac{Z_{2}Z_{3}}{Z_{2}+Z_{3}}}=\frac{Z_{2}+Z_{3}}{Z_{1}Z_{2}+Z_{1}Z_{3}+Z_{2}Z_{3}}\underline{E}_{1}$$
+%Notation: $\sum{} = Z_{1}Z_{2}+Z_{1}Z_{3}+Z_{2}Z_{3}$
+	
+\item Source $E_{2}$ seule:
+\begin{center}
+\begin{circuitikz}[scale=0.75] \draw
+(0,0) 	to[short, i=$\underline{I}_{1}^{(2)}$] (0,2)
+		to[generic, l=$Z_1$] (0,4)--(4,4)
+(2,0) 	to[sinusoidal voltage source, v=$E_2$, i_>=$\underline{I}_{2}^{(2)}$] (2,2)
+		to[generic, l=$Z_2$] (2,4)
+(4,0) 	to[short] (4,2)
+		to[generic, l=$Z_3$] (4,4)
+(0,0)--(4,0)
+node[circ](A) at (2,0){A}
+node[circ](B) at (2,4){B}
+;
+\end{circuitikz}
+\end{center}
+
+$$\underline{I}_2^{(2)}=\frac{\underline{E}_{2}}{Z_{2}+\frac{Z_{1}Z_{3}}{Z_{1}+Z_{3}}}=\frac{Z_{1}+Z_{3}}{Z_{1}Z_{2}+Z_{1}Z_{3}+Z_{2}Z_{3}}\underline{E}_{2}$$
+$$\underline{E}_{2}=Z_{2}\underline{I}_{2}^{(2)}-Z_{1}\underline{I}_{1}^{(2)}$$
+$$\Rightarrow \underline{I}_{1}^{(2)}=\frac{Z_{2}\underline{I}_{2}^{(2)}-\underline{E}_{2}}{Z_1}=(\frac{Z_{1}Z_2+Z_2Z_{3}}{Z_{1}Z_{2}+Z_{1}Z_{3}+Z_{2}Z_{3}}-1)\frac{\underline{E}_{2}}{Z_1}=-\frac{Z_{3}}{Z_{1}Z_{2}+Z_{1}Z_{3}+Z_{2}Z_{3}}\underline{E}_{2}$$
+
+\item Source $E_{3}$ seule:\\
+Par symétrie,
+$$\underline{I}_{1}^{(3)}=-\frac{Z_{2}}{Z_{1}Z_{2}+Z_{1}Z_{3}+Z_{2}Z_{3}}\underline{E}_{3}$$
+\end{itemize}
+
+Par le théorème de superposition: 
+$$\Rightarrow \underline{I}_{1}=\underline{I}_{1}^{(1)}+\underline{I}_{1}^{(2)}+\underline{I}_{1}^{(3)}=\frac{(Z_{2}+Z_{3})\underline{E}_{1}-Z_{3}\underline{E}_{2}-Z_{2}\underline{E}_{3}}{Z_{1}Z_{2}+Z_{1}Z_{3}+Z_{2}Z_{3}}$$
+
+$\underline{I}_{2}$ et $\underline{I}_{3}$ s'obtiennent par permutation circulaire\footnote{c'est-à-dire: au départ de l'expression de $\underline{I}_{1}$, on obtient $\underline{I}_{2}$ en remplaçant tous les indices "1" par des "2", tous les "2" par des "3" et tous les "3 par des "1". On recommence pour obtenir $\underline{I}_{3}$.}:
+$$\Rightarrow \underline{I}_{2}=\frac{(Z_{3}+Z_{1})\underline{E}_{2}-Z_{1}\underline{E}_{3}-Z_{3}\underline{E}_{1}}{Z_{1}Z_{2}+Z_{1}Z_{3}+Z_{2}Z_{3}}$$
+$$\Rightarrow \underline{I}_{3}=\frac{(Z_{1}+Z_{2})\underline{E}_{3}-Z_{2}\underline{E}_{1}-Z_{1}\underline{E}_{2}}{Z_{1}Z_{2}+Z_{1}Z_{3}+Z_{2}Z_{3}}$$
+
+}
+\Question
+{%Q
+\textit{Déterminer les expressions de ce courant pour les cas particuliers suivants.}
+\begin{enumerate}
+\item $Z_{1}=Z_{2}=Z_{3}=Z$
+\item $Z_{1}=Z_{2}=Z_{3}=Z$ et $\underline{E_{1}}+\underline{E_{2}}+\underline{E_{3}}=0$\\
+%Par exemple: $e_{1}(t)=Ecos(\omega t)$; $e_{2}(t)=Ecos(\omega t+\frac{2\pi}{3})$; $e_{3}(t)=Ecos(\omega t+\frac{4\pi}{3})$
+\end{enumerate}
+}
+{%C
+
+\begin{enumerate}
+\item Si $Z_{1}=Z_{2}=Z_{3}=Z$:
+$$\underline{I}_{1}=\frac{2\underline{E}_{1}-\underline{E}_{2}-\underline{E}_{3}}{3Z}$$
+$$\underline{I}_{2}=\frac{2\underline{E}_{2}-\underline{E}_{3}-\underline{E}_{1}}{3Z}$$
+$$\underline{I}_{3}=\frac{2\underline{E}_{3}-\underline{E}_{1}-\underline{E}_{2}}{3Z}$$
+
+\item Si $Z_{1}=Z_{2}=Z_{3}=Z$ et $\underline{E}_{1}+\underline{E}_{2}+\underline{E}_{3}=0$:
+$$\underline{I}_{1}=\frac{\underline{E}_{1}}{Z}$$
+$$\underline{I}_{2}=\frac{\underline{E}_{2}}{Z}$$
+$$\underline{I}_{3}=\frac{\underline{E}_{3}}{Z}$$
+\end{enumerate}
+}
+{%A
+}
+
+
+\end{document}
