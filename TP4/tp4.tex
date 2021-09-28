@@ -291,12 +291,12 @@ node[ocirc] (B) at (3,0.25) {}
 \end{circuitikz}
 \hspace{1cm}
 \begin{circuitikz} \draw
-(2,1.75)--(3,1.75)--(4.5,1.75) to[R, l=$R_u$] (4.5,0.25)--(3,0.25)
+(2,1.75)--(3,1.75)--(4.75,1.75) to[R, l=$R_u$] (4.75,0.25)--(3,0.25)
 (2,0.25)--(3,0.25)
 (0,0)--(0,2)--(2,2)--(2,0)--(0,0)
 node[ocirc] (A) at (3,1.75) {}
 node[ocirc] (B) at (3,0.25) {}
-(B) to [open, v_=$v_1(t)$] (A)
+(B) to [open, v_=$v_2(t)$] (A)
 ;
 \end{circuitikz}
 \end{center}
@@ -325,8 +325,8 @@ node[ocirc] (B) at (3,0) {}
 (0,0)--(3,0)
 node[ocirc] (A) at (3,2) {}
 node[ocirc] (B) at (3,0) {}
-(B) to [open, v_=$v_1(t)$] (A)
-(3,2)--(4.5,2)	to[R, l=$R_u$] (4.5,0)--(3,0)
+(B) to [open, v_=$v_2(t)$] (A)
+(3,2)--(4.75,2) to[R, l=$R_u$] (4.75,0)--(3,0)
 ;
 \end{circuitikz}
 \end{center}
